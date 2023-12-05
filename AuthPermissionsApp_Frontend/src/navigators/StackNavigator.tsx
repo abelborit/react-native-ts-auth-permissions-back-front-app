@@ -29,7 +29,12 @@ export const StackNavigator = () => {
       }}>
       <Stack.Screen
         name="LoginScreen"
-        options={{title: 'Login'}}
+        options={{
+          title: 'Login',
+          // cardStyle: {
+          //   backgroundColor: 'rgba(40, 66, 91, 1)',
+          // },
+        }}
         component={LoginScreen}
       />
       <Stack.Screen
