@@ -24,7 +24,7 @@ export const loginRegisterStyles = StyleSheet.create({
   inputStyle: {
     height: 45,
     fontSize: 17,
-    color: '#28425B',
+    color: '#fff',
     fontWeight: 'bold',
   },
   inputBorderBottomIOS: {
@@ -51,21 +51,21 @@ export const loginRegisterStyles = StyleSheet.create({
   buttonSecondaryStyle: {
     justifyContent: 'center',
     alignItems: 'center',
-    borderColor: '#28425B',
-    borderWidth: 3,
+    borderColor: '#fff',
+    backgroundColor: 'rgba(255,255,255,0.1)',
+    borderWidth: 2.5,
     height: 52,
     width: 200,
     borderRadius: 50,
   },
   buttonSecondaryText: {
     fontSize: 21,
-    color: '#28425B',
+    color: '#fff',
     fontWeight: 'bold',
   },
   buttonNewAcountContainer: {
     justifyContent: 'center',
     alignItems: 'flex-end',
-    marginTop: 30,
   },
   buttonNewAcount: {},
   buttonNewAcountText: {

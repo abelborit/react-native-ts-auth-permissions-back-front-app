@@ -3,6 +3,8 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {LoginScreen} from '../screens/LoginScreen';
 import {RegisterScreen} from '../screens/RegisterScreen';
 import {ProtectedScreen} from '../screens/ProtectedScreen';
+import {useAuthContext} from '../context/authContext/AuthContext';
+import {LoaderComponent} from '../components/LoaderComponent';
 
 export type RootStackParams = {
   /* colocar las rutas que vamos a tener */
@@ -14,6 +16,12 @@ export type RootStackParams = {
 const Stack = createStackNavigator<RootStackParams>();
 
 export const StackNavigator = () => {
+  const {status} = useAuthContext();
+
+  if (status === 'checking') {
+    return <LoaderComponent />;
+  }
+
   return (
     <Stack.Navigator
       screenOptions={{
@@ -27,26 +35,26 @@ export const StackNavigator = () => {
           backgroundColor: '#fff',
         },
       }}>
-      <Stack.Screen
-        name="LoginScreen"
-        options={{
-          title: 'Login',
-          // cardStyle: {
-          //   backgroundColor: 'rgba(40, 66, 91, 1)',
-          // },
-        }}
-        component={LoginScreen}
-      />
-      <Stack.Screen
-        name="RegisterScreen"
-        options={{title: 'Register'}}
-        component={RegisterScreen}
-      />
-      <Stack.Screen
-        name="ProtectedScreen"
-        options={{title: 'Protected Route'}}
-        component={ProtectedScreen}
-      />
+      {status !== 'authenticated' ? (
+        <>
+          <Stack.Screen
+            name="LoginScreen"
+            options={{title: 'Login'}}
+            component={LoginScreen}
+          />
+          <Stack.Screen
+            name="RegisterScreen"
+            options={{title: 'Register'}}
+            component={RegisterScreen}
+          />
+        </>
+      ) : (
+        <Stack.Screen
+          name="ProtectedScreen"
+          options={{title: 'Protected Route'}}
+          component={ProtectedScreen}
+        />
+      )}
     </Stack.Navigator>
   );
 };

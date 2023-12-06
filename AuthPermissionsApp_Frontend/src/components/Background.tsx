@@ -12,11 +12,11 @@ export const Background = () => {
         backgroundColor: globalTheme.globalPrimaryColor,
         width: dimensions.width * 1.85,
         height: dimensions.height * 1.5,
-        transform: [
-          {
-            rotate: dimensions.height > dimensions.width ? '-75deg' : '0deg',
-          },
-        ],
+        // transform: [
+        //   {
+        //     rotate: dimensions.height > dimensions.width ? '-75deg' : '0deg',
+        //   },
+        // ],
         top: dimensions.height > dimensions.width ? -185 : 0,
       }}
     />
