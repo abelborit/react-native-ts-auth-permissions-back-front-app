@@ -1,6 +1,6 @@
+/* la idea de un reducer es una función que recibe el estado y retorna un objeto del mismo tipo del estado y también recibe acciones y estas acciones nos sirven para determinar el nuevo estado. Este reducer regresará o retornará algo de tipo AuthProviderStateInterface creado en su provider */
 import {UserInterface} from '../../interfaces/appInterfaces';
 import {AuthProviderStateInterface} from './AuthProvider';
-/* la idea de un reducer es una función que recibe el estado y retorna un objeto del mismo tipo del estado y también recibe acciones y estas acciones nos sirven para determinar el nuevo estado. Este reducer regresará o retornará algo de tipo AuthProviderStateInterface creado en su provider */
 
 /* se usa un type y no una interface por preferencia ya que con type para las acciones sabemos que estas no se van a extender, es algo rígido */
 type ReducerActions =
