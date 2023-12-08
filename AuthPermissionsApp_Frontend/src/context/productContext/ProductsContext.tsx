@@ -6,13 +6,16 @@ import {ProductsInterface} from '../../interfaces/appInterfaces';
 interface ProductsContextProps {
   products: ProductsInterface[];
   loadProducts: () => Promise<void>;
-  addProduct: (categoryId: string, productName: string) => Promise<void>;
+  addProduct: (
+    categoryId: string,
+    productName: string,
+  ) => Promise<ProductsInterface>;
   updateProduct: (
     categoryId: string,
     productName: string,
     productId: string,
   ) => Promise<void>;
-  deleteProduct: (id: string) => Promise<void>;
+  // deleteProduct: (id: string) => Promise<void>;
   loadProductById: (id: string) => Promise<ProductsInterface>;
   uploadImage: (data: any, id: string) => Promise<void>;
 }

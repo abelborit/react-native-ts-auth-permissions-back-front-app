@@ -173,7 +173,7 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
     ) {
       console.log('Correct Register ✅');
       dispatch({
-        type: 'singIn',
+        type: 'singUp',
         payload: {
           user: {
             rol: 'rol_user',
@@ -219,8 +219,8 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
       // await AsyncStorage.setItem('authToken', response.data.token);
       SetItemAsyncStorage('authToken', response.data.token);
     } catch (error: any) {
-      console.log('error singIn', error);
-      // console.log('error singIn', error.response.data.msg);
+      console.log('error singUp', error);
+      // console.log('error singUp', error.response.data.msg);
       dispatch({
         type: 'authError',
         payload: error.response.data.msg || 'Incorrect information ❌',

@@ -40,10 +40,10 @@ export interface ProductsInterface {
   img?: string;
 }
 
-export interface CategoryInterface {
-  _id: string;
-  nombre: string;
-}
+// export interface CategoryInterface {
+//   _id: string;
+//   nombre: string;
+// }
 
 /* --- CATEGORIES INTERFACES --- */
 export interface CagetoriesResponse {

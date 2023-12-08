@@ -10,6 +10,8 @@
   - `npm i axios`
 - Async Storage: https://react-native-async-storage.github.io/async-storage/docs/install/
   - `npm install @react-native-async-storage/async-storage`
+- react-native-picker/picker: https://www.npmjs.com/package/@react-native-picker/picker
+  - `npm i @react-native-picker/picker`
 
 ---
 

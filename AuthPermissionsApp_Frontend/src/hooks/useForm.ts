@@ -38,9 +38,18 @@ export const useForm = <T extends {[key: string]: string | number | boolean}>(
     });
   };
 
+  const setFormValue = (formToSet: T) => {
+    setFormState({
+      ...formState,
+      ...formToSet,
+    });
+    // setFormState(formToSet);
+  };
+
   return {
     ...formState,
     formState,
     handleChangeForm,
+    setFormValue,
   };
 };
