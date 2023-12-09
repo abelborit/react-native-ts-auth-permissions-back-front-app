@@ -66,7 +66,7 @@ interface ProductsScreenProps
 export const ProductsScreen = ({navigation}: ProductsScreenProps) => {
   const dimensions = useWindowDimensions();
   const insets = useSafeAreaInsets();
-  const {products, loadProducts} = useProductsContext();
+  const {productsState, loadProducts} = useProductsContext();
   const {user, logOut} = useAuthContext();
   const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -158,7 +158,7 @@ export const ProductsScreen = ({navigation}: ProductsScreenProps) => {
             />
           }
           keyboardDismissMode="on-drag" // al hacer scroll se oculte el teclado
-          // data={products}
+          // data={productsState}
           data={FICTITIOUS_PRODUCTS}
           key={dimensions.height > dimensions.width ? '_' : '#'} // para evitar errores con el numColumns
           keyExtractor={item => item._id} // para evitar errores con el numColumns

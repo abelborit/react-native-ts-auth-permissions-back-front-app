@@ -1,10 +1,11 @@
 /* el context es quien va a exponer los datos a los demás componentes */
 import {createContext, useContext} from 'react';
 import {ProductsInterface} from '../../interfaces/appInterfaces';
+import {ImagePickerResponse} from 'react-native-image-picker';
 
 /* aquí es donde se coloca qué es lo que quiero distribuir en el value del Provider, aquí deberían estar todos los métodos, estados, etc... */
 interface ProductsContextProps {
-  products: ProductsInterface[];
+  productsState: ProductsInterface[];
   loadProducts: () => Promise<void>;
   addProduct: (
     categoryId: string,
@@ -17,7 +18,7 @@ interface ProductsContextProps {
   ) => Promise<void>;
   // deleteProduct: (id: string) => Promise<void>;
   loadProductById: (id: string) => Promise<ProductsInterface>;
-  uploadImage: (data: any, id: string) => Promise<void>;
+  uploadImage: (dataPhoto: ImagePickerResponse, id: string) => Promise<void>;
 }
 
 export const ProductsContext = createContext<ProductsContextProps>(

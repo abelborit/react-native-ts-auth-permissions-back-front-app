@@ -5,7 +5,8 @@ import {
   ProductsInterface,
   ProductsResponse,
 } from '../../interfaces/appInterfaces';
-import {authProductsAPI} from '../../apis/authProductsAPI';
+import {/* BASE_URL, */ authProductsAPI} from '../../apis/authProductsAPI';
+import {ImagePickerResponse} from 'react-native-image-picker';
 
 interface ProductsProviderProps {
   children: JSX.Element | JSX.Element[];
@@ -50,7 +51,7 @@ export const ProductsProvider = ({children}: ProductsProviderProps) => {
     async (
       categoryId: string,
       productName: string,
-    ) /* : Promise<ProductsInterface> */ => {
+    ): Promise<ProductsInterface> => {
       // console.log('addProduct');
       // console.log({categoryId, productName});
       try {
@@ -66,8 +67,10 @@ export const ProductsProvider = ({children}: ProductsProviderProps) => {
 
         /* se retorna para tener esa data a la mano por si se requiere hacer algo adicional como mostrar una alerta o mostrar los botones de cámara o galería */
         return response.data;
-      } catch (error) {
+      } catch (error: any) {
         console.log('error addProduct', error);
+        /* se retorna el error porque en el try se está retornando algo entonces el catch también tiene que retornar algo para cumplir con Promise<ProductsInterface> */
+        return error;
       }
     },
     [],
@@ -99,27 +102,73 @@ export const ProductsProvider = ({children}: ProductsProviderProps) => {
   );
 
   const loadProductById = useCallback(
-    async (id: string) /* : Promise<ProductsInterface> */ => {
+    async (id: string): Promise<ProductsInterface> => {
       try {
         const response = await authProductsAPI.get<ProductsInterface>(
           `/productos/${id}`,
         );
 
         return response.data;
-      } catch (error) {
+      } catch (error: any) {
         console.log('error loadProductById', error);
+        /* se retorna el error porque en el try se está retornando algo entonces el catch también tiene que retornar algo para cumplir con Promise<ProductsInterface> */
+        return error;
       }
     },
     [],
   );
 
-  const uploadImage = useCallback(async (data: any, id: string) => {}, []);
+  const uploadImage = useCallback(
+    async (dataPhoto: ImagePickerResponse, id: string) => {
+      const fileToUpload = {
+        uri: dataPhoto.assets![0].uri,
+        type: dataPhoto.assets![0].type,
+        name: dataPhoto.assets![0].fileName,
+      };
+
+      /* crear un FormData en donde tengamos la imagen y el archivo (archivo es la llave que se le puso a la API del backend). La interfaz FormData proporciona una manera sencilla de construir un conjunto de parejas clave/valor que representan los campos de un formulario y sus valores */
+      const formData = new FormData();
+
+      // formData.append('nombre_key_backend', archivo_a_subir);
+      formData.append('archivo', fileToUpload);
+
+      try {
+        /* se podría colocar con const response = ...... pero no es necesario hacer nada con esa respuesta ya que se mandará la imagen al backend y luego el backend ya hace el proceso de subirla a Cloudinary. Tener en cuenta que lo que me devuelve este put es alto de ProductsInterface pero no se hará nada más con esa respuesta */
+        /* puede ser que haya problemas al usar axios al subir la imagen, entonces se puede usar el fetch clásico para trabajarlo de forma nativa */
+        // await fetch(`${BASE_URL}/uploads/productos/${id}`, {
+        //   method: 'PUT',
+        //   body: formData,
+        //   headers: {
+        //     Accept: 'application/json',
+        //     'Content-Type': 'multipart/form-data',
+        //   },
+        // });
+
+        await authProductsAPI.put<ProductsInterface>(
+          `/uploads/productos/${id}`,
+          formData,
+          {
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'multipart/form-data',
+            },
+            // transformRequest: () => {
+            //   return formData;
+            // },
+          },
+        );
+      } catch (error) {
+        console.log('error uploadImage', error);
+      }
+    },
+    [],
+  );
 
   // const deleteProduct = useCallback(async (id: string) => {}, []);
 
   const valueProvider = useMemo(
     () => ({
-      ...productsState,
+      productsState,
       loadProducts,
       addProduct,
       updateProduct,

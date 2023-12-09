@@ -12,6 +12,8 @@
   - `npm install @react-native-async-storage/async-storage`
 - react-native-picker/picker: https://www.npmjs.com/package/@react-native-picker/picker
   - `npm i @react-native-picker/picker`
+- react-native-image-picker: https://www.npmjs.com/package/react-native-image-picker
+- `npm i react-native-image-picker`
 
 ---
 

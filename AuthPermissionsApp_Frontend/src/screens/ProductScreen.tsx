@@ -1,5 +1,5 @@
 import {StackScreenProps} from '@react-navigation/stack';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   ActivityIndicator,
   Image,
@@ -11,6 +11,8 @@ import {
   View,
 } from 'react-native';
 import {Picker} from '@react-native-picker/picker';
+/* usar react-native-image-picker no requiere permisos de la cámara porque eso ya viene por defecto en el simulador pero igual se puede solicitar con algún paquete para manejar estos permisos y hacer su configuración respectiva */
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {RootStackParams} from '../navigators/StackNavigatorProducts';
 import {globalTheme} from '../theme/globalTheme';
 import {useCategories} from '../hooks/useCategories';
@@ -51,13 +53,15 @@ export const ProductScreen = ({navigation, route}: ProductScreenProps) => {
   /* hay que eliminar category = '', img = '' cuando funcione la API */
   const {id = '', name = '', category = '', img = ''} = route.params;
   const {categoriesState, isLoadingCategories} = useCategories();
-  const {loadProductById, addProduct, updateProduct} = useProductsContext();
+  const {loadProductById, addProduct, updateProduct, uploadImage} =
+    useProductsContext();
   const {formState, handleChangeForm, setFormValue} = useForm({
     _id: id,
     categoriaID: category, // colocar categoriaID: '' cuando funcione la API
     nombre: name,
     img: img, // colocar img: '' cuando funcione la API
   });
+  const [temporalURIPhoto, setTemporalURIPhoto] = useState<string>('');
 
   useEffect(() => {
     navigation.setOptions({
@@ -105,6 +109,51 @@ export const ProductScreen = ({navigation, route}: ProductScreenProps) => {
 
       handleChangeForm(newProduct._id, '_id');
     }
+  };
+
+  const takePhotoWithCellCamera = () => {
+    /* al querer usar la cámara en Android funciona normal pero en iOS parece que no funciona bien o simplemente no funciona, se tendría que probar en un celular iOS fisico en vez del simulador porque parece que en físico sí funciona bien o ver también si con las nuevas actualizaciones del paquete ya funciona todo normal. Tener en cuenta que al tomar la foto con el emulador puede aparecer en blanco y negro aunque con las versiones reciente parece que ya se solucionó pero si aparece en blanco y negro esto no debería suceder con el dispositivo físico */
+    /* al tomar la foto nos dará información sobre la foto, el achivo, uri, el tamaño, altura, etc. pero nos damos cuenta que en algunas partes de los path o URL dice _temp_ y eso nos quiere decir que son archivos temporales, es decir, que se pueden usar por cierto tiempo y luego el mismo sistema operativo las borra pero por eso es que se tendría que mandar al backend y luego al solicitar el producto o elemento entonces ya traer toda esa data */
+    launchCamera(
+      {
+        mediaType: 'photo',
+        quality: 0.5, // que sea la mitad de la calidad de la imagen para que no sea tan pesada
+        cameraType: 'back',
+      },
+      response => {
+        // console.log(response);
+        const responsePhoto = response;
+        // console.log(responsePhoto);
+
+        if (response.didCancel) return;
+        if (response.assets!.length === 0) return;
+        if (!response.assets![0].uri) return;
+
+        setTemporalURIPhoto(response.assets![0].uri);
+        uploadImage(responsePhoto, formState._id);
+      },
+    );
+  };
+
+  const takePhotoWithCellGallery = () => {
+    launchImageLibrary(
+      {
+        mediaType: 'photo',
+        quality: 0.5, // que sea la mitad de la calidad de la imagen para que no sea tan pesada
+      },
+      response => {
+        // console.log(response);
+        const responsePhoto = response;
+        // console.log(responsePhoto);
+
+        if (response.didCancel) return;
+        if (response.assets!.length === 0) return;
+        if (!response.assets![0].uri) return;
+
+        setTemporalURIPhoto(response.assets![0].uri);
+        uploadImage(responsePhoto, formState._id);
+      },
+    );
   };
 
   return (
@@ -177,19 +226,21 @@ export const ProductScreen = ({navigation, route}: ProductScreenProps) => {
           <View style={styles.buttonContainerSecondary}>
             <TouchableOpacity
               style={styles.buttonStyleSecondary}
-              activeOpacity={0.8}>
+              activeOpacity={0.8}
+              onPress={() => takePhotoWithCellCamera()}>
               <Text style={styles.buttonTextSecondary}>Open Camara</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               style={styles.buttonStyleSecondary}
-              activeOpacity={0.8}>
+              activeOpacity={0.8}
+              onPress={() => takePhotoWithCellGallery()}>
               <Text style={styles.buttonTextSecondary}>Open Galery</Text>
             </TouchableOpacity>
           </View>
         ) : null}
 
-        {formState.img.length > 0 ? (
+        {formState.img.length > 0 && !temporalURIPhoto ? (
           <Image
             source={{uri: formState.img}}
             style={{
@@ -209,6 +260,18 @@ export const ProductScreen = ({navigation, route}: ProductScreenProps) => {
             {JSON.stringify(formState, null, 3)}
           </Text>
         )}
+
+        {temporalURIPhoto ? (
+          <Image
+            source={{uri: temporalURIPhoto}}
+            style={{
+              width: '100%',
+              height: 300,
+              marginTop: 20,
+              // objectFit: 'cover',
+            }}
+          />
+        ) : null}
       </ScrollView>
     </View>
   );

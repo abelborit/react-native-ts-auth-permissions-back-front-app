@@ -3,7 +3,7 @@ import {GetItemAsyncStorage} from '../helpers/AsyncStorageHelper';
 
 /* es el que se irá cambiando en modo desarrollo y producción */
 // const BASE_URL = process.env.NODE_ENV === 'production' ? 'http://IP_USUARIO:8080/api' : 'http://localhost:8080/api';
-const BASE_URL = 'http://IP_USUARIO:8080/api';
+export const BASE_URL = 'http://IP_USUARIO:8080/api';
 
 export const authProductsAPI = axios.create({
   baseURL: BASE_URL,
